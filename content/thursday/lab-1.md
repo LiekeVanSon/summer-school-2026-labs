@@ -9,7 +9,7 @@ toc: true
 ## Overview
 
 Massive stars ($M \gtrsim 8 M_{\odot}$) are overwhelmingly part of binary (or even higher order) systems.
-See this figure from Offner et al. (2023) that compiles data from many multiplicity studies.
+See this figure from Offner et al. (2023)[^offner2023] that compiles data from many multiplicity studies.
 ![Multiplicity_fraction](/thursday/lab1/multfraction.png)
 When such stars evolve, they engage is mass-transfer events, which create a whole host of astrophysical phenomena that could not be understood with single-star evolution.
 One of the best examples are X-ray binaries:
@@ -18,7 +18,6 @@ Artist impression of a mass-transferring X-ray binary. The disk of the accretor 
 
 This lab will introduce you to the inner workings of `MESA/binary`, and give you an understanding of how massive stars exchange mass.
 
-A bonus exercise set for this lab is available on the sibling page [Lab 1 Bonus Exercises](/thursday/bonus-exercises/).
 
 ## Anatomy of a binary
 
@@ -29,16 +28,15 @@ Imagine two rows of boxes, representing the stars.
 Each box is filled with the properties of the interiors ($T, \rho, r, L, X$), varying from the cores to the surfaces.
 `MESA/star` is in charge of evolving those two rows of boxes by advancing the time by $\Delta t$, and solving the stellar-structure equations, keeping in mind all of the required microphysics (nuclear nets, eos, opacities, mixing, etc...).
 A binary star, however, is more than just its two components.
-The two objects are **orbiting** each other, which requires 4 variables to fully specify (we do not care about the orbit's orientation to a potential observer):
+The two objects are **orbiting** each other, which requires 4 variables to fully specify (we do not care about the orbit's orientation to a potential observer). 
 We choose them to be the masses of the objects, the orbit's angular momentum, and its eccentricity.
 $$M_1, M_2, J_{\rm orb}, e.$$
 Each variable has an associated evolution equation, e.g.:
 $$\frac{dM_1}{dt} = \dot{M}_{1, \rm wind} + \dot{M}_{1, \rm trans}$$
 
 `MESA/binary`'s job is to carefully track the orbital quantities, *i.e.* compute the values $dM_1/dt$ (which it passes on to `MESA/star` who actually perfroms the mass change and associate remeshing of the model), $dJ/dt$, *etc.*.
-
-It also needs to do checks that the state of the binary star is "acceptable."
-For example:
+`MESA/binary` also needs to check that the resulting state of the binary star is "acceptable."
+Consider the following two example cases:
 
 1. If $\dot{M}_{1, \rm transfer}=0$ and neither star overflows its respective Roche Lobe, we are good, as this fulfills the requirements for a non-interacting binary.
 2. On the other hand, if it turns out that the evolution of the donor (as reported by `MESA/star`) is such that its radius is larger than its Roche Lobe radius, the `roche_lobe` scheme of mass transfer is violated!
@@ -51,7 +49,8 @@ We have to redo the step with a higher mass-transfer rate, so that (hopefully) t
 ### How to do binaries in `MESA`
 
 `MESA/binary` has its own set of controls to setup in the initial condition of the binary, manage the physics of mass transfer, tides, and it has its own set of timestep controls (for example to not let the mass-transfer rate change too quickly from step to step).
-All of these controls and their defaults are listed in the [Reference under the binary defaults heading](https://docs.mesastar.org/en/latest/reference.html#binary-defaults).
+
+All of these control options and their defaults are listed on the docs under [Reference and Defaults > Binary defaults](https://docs.mesastar.org/en/latest/reference.html#binary-defaults).
 
 > [!Important]
 > In this lab, you will only need to modify/enter inlist values, not play with run_binary_extras.f90.
@@ -63,20 +62,20 @@ The actual running of a binary simulation is similar to that of a single star:
 2. do `./mk` to compile the `run_binary_extras` routines (even if they're empty/do nothing)
 3. do `./rn` to start the simulation.
 
-With the most basic concepts of `MESA/binary` out of the way, let us continue by exploring the science of massive binary stars and their interactions.
+With the most basic concepts of `MESA/binary` out of the way, let us continue by exploring the science of massive binary stars and their interactions!
 
 ## Mass transfer cases
 
 The common thread through the series of labs today is how we think gravitational wave (GW) mergers are produced.
 Since September of 2015, GW mergers involving neutron stars and black holes are being detected with the LIGO, VIRGO, and KAGRA detectors (referred to as LVK).
-However, we aren't yet fully certain how those black-hole are formed.
+However, we don't know how these black-hole are formed.
 Is it through dynamical interactions in clusters that they get paired up?
 Maybe they come from the very first pop-III stars that makes them so massive?
 
 The scenario we're exploring here is called **isolated binary evolution**.
-We start with two (massive) stars in a binary orbit, and they evolve, going supernova, and leave behind two compact objects that merge in roughly the age of the universe (called a Hubble time $\tau_H = H_0^{-1} \approx 14.5 {\rm Gyr}$).
+This assumes we start with two (massive) stars born together in a binary. As they evolve, go supernova, and leave behind two compact objects, we hope that they are close enough to merge in a time less than the age of the universe (called a Hubble time $\tau_H = H_0^{-1} \approx 14.5 {\rm Gyr}$).
 
-In this lab, we'll zoom in on the first part of binary evolution:
+Let's zoom in on the first part of binary evolution:
 Two stars which undergo **mass transfer**:
 
 ![rlof-pic](/thursday/lab1/rlof_diagram.png)
@@ -84,16 +83,18 @@ Two stars which undergo **mass transfer**:
 When stars evolve, they (generally) become bigger over time.
 As soon as the most massive star evolves to fill its **Roche Lobe**, mass transfer will ensue, called Roche Lobe overflow, or **RLOF**.
 Depending on the evolutionary stage of the donor, we destinguish different mass transfer *cases*.
-When the donor is still hydrogen burning, we speak of case A mass transfer, while when it is core-helium burning, we have case B, and there's even case C for mass transfer post-core-helium exhaustion.
+When the donor is still hydrogen burning (on the main sequence), we speak of **case A** mass transfer, 
+if the RLOF occurs once the donor has evolved off the mainsequence up to core-helium exhaustion, we call it **case B** mass transfer. 
+There's even **case C** for mass transfer post-core-helium exhaustion.
 
 The main parameter controlling when mass transfer will occur is the initial orbital period.
 For massive stars, the rule of thumb is that case A occurs (roughly) for initial periods under 10 days, and case B occurs between 10 and 1000 days (with case C at a small interval of even larger periods).
 
 > [!Note]
-> To get started with the binary-evolution runs of this lab, copy the contents of the binary `work` directory from `$MESA_DIR/binary/work` into your directory tree where you are running the school labs (maybe a subfolder `school/thursday_binaries/` or something).
+> To get started with the binary-evolution runs of this lab, copy t he contents of the binary `work` directory from `$MESA_DIR/binary/work` into your directory tree where you are running the school labs (maybe a subfolder `school/thursday_binaries/` or something).
 > `cd` to it.
 > You should see familiar files like `./rn`, `inlist`, and a `src/` directory.
-> Next, download and extract the [inlist bundle](inlists_start.zip) for this lab into your folder. It contains the inlists and starting models.
+> Next, download and extract the [inlist bundle](/thursday/lab1/inlists_start.zip) for this lab into your folder. It contains the inlists and starting models.
 > Remember that `MESA` always looks for a file named `inlist` (exactly) first to start reading in parameters.
 > However, as is customary, we've setup up an inlist chain to read the appropriate parameters from appropriately named inlist files:
 >
@@ -127,31 +128,48 @@ add the following to `&binary_controls`:
    sync_type_2 = "Orb_period"
 ```
 
+load the 35 model in inlist1:
+```fortran
+   load_model_filename = 'zams35.mod'  ! select correct model for star 1!
+```
+and the 25 one in inlist2
+```fortran
+   load_model_filename = 'zams25.mod'  ! select correct model for star 2!
+```
+
 {{< /details >}}
 
 Start the `MESA` run with `./mk` and `./rn`, just as you'd do for single-star evolution!
 
 During the run, watch the following quantities in the `pgbinary` window:
 
-1. Mass-transfer rate: How much mass is the primary dumping onto the secondary, and what is its efficiency? Is is constant over time (or model number)? Are there multiple distinct mass-transfer phases?
+1. Can you also find is its mass transfer efficiency (and what does this mean?)
+Can you find the mass-transfer rate? Is the mass-transfer rate constant over time (or model number)? Can you identify multiple distinct mass-transfer phases based on the mass transfer rate over time?
+
 {{< details title="Hints" closed="true" >}}
 look at `lg_mtransfer_rate` and its associated graph. Also watch the `eff_xfer_fraction` (the "effective transfer fraction") number.
-Don't be alarmed if the `xfer_fraction` is negative when no mass transfer is happening, that is because it is naively calculated as `eff_xfer_fraction = -dot_M2 / dot_M1`, which contains contributions from the stellar winds.
+
 {{< details title="Result" closed="true" >}}
-You should see two distinct phases of mass transfer, case A and later case AB when the primary exhausts hydrogen and tries to become a giant.
-In fact, the first mass-transfer phase is split in 2: a high mass-transfer rate *fast case A* followed by a more mellow *slow case A* where the mass transfer rate is a couple of orders of magnitude lower.
+Mass transfer efficiency is the ratio of mass accreted over the amount donated.
+It is calculated as `eff_xfer_fraction = -dot_M2 / dot_M1`. Don't be alarmed if the `xfer_fraction` is negative when no mass transfer is happening, that is because it  contains contributions from the stellar winds.
+
+You can see two distinct phases of mass transfer in the `lg_mtransfer_rate' plot; case A and later case AB when the primary exhausts hydrogen and tries to become a giant.
+The first mass-transfer phase can be further split in 2: a high mass-transfer rate *fast case A* followed by a more mellow *slow case A* where the mass transfer rate is a couple of orders of magnitude lower.
 {{< /details >}}
 {{< /details >}}
 
 2. Are the stars in thermal equilibrium during any of the mass-transfer phases? If not, how does this manifest?
 {{< details title="Hint" closed="true" >}}
-Take a look at the luminosity profiles; thermal equilibrium is defined as $\frac{dL}{dm} = \epsilon_{\rm nuc}$.
-Where is nuclear burning occuring?
+Thermal equilibrium is defined as $\frac{dL}{dm} = \epsilon_{\rm nuc}$.
+Take a look at the luminosity and $\epsilon_{\rm nuc}$ profiles;  Where is nuclear burning occuring?
+
 Compare the numbers for the `kh_timescale` and the `mdot_timescale` in the text summary of both stars.
 {{< details title="Result" closed="true" >}}
-You should see that neither star satisfies it during rapid mass-transfer phases.
-The donor's luminosity profile dips significantly in the envelope, so that $\frac{dL}{dm} \ne 0,$ but we have that $\epsilon_{\rm nuc} = 0$ as no burning takes place there.
+Looking at the second plot from above in the left-most columns of star 1 and 2, we see that $\epsilon_{\rm nuc} = 0$, since no burning takes place in the outer part of the star.
+At the same time, we see the donor's luminosity profile (blue, bottom left) dip significantly in the envelope, so that $\frac{dL}{dm} \ne 0$. 
 The accretor is slightly more luminous than its nuclear luminosity, due to the accretion energy it gains.
+
+You should see that neither star satisfies thermal equilibrium during rapid mass-transfer phases.
 In the slow case A phase, thermal equilibrium is nearly satisfied, as the thermal timescale of the stars is much shorter than the mass-transfer timescale.
 {{< /details >}}
 {{< /details >}}
@@ -165,7 +183,7 @@ The stars rotate appreciably, at around 50% of critical. But importantly, the ti
 {{< /details >}}
 
 4. How does the period evolve during the mass transfer events?
-5. At the end of the run, what is the state of both of the stars? Is the secondary star significantly evolved?
+5. At the end of the run, what is the state of both of the stars? Is the secondary star significantly evolved? (look at the abundance profile).
 Are their surface conditions different?
 Note down the carbon-core mass of the primary, and surface rotation rate of the accretor, you might need these numbers later.
 
@@ -183,13 +201,13 @@ In this run therefore, we will simulate weaker tides.
 
 Setup:
 
-- Edit `inlist_project` with so that this system has an initial period of 20 days.
-- Change the tides prescription from `Orb_period` to `Hut_rad`. The prescription of Hut, P. 1981, A&A, 99, 126, is a physically motivated computation of how tides operate in the radiative envelopes of massive stars.
+- Edit `inlist_project` so that this system has an initial period of 20 days.
+- Change the tides prescription from `Orb_period` to `Hut_rad`. The prescription of Hut (1981)[^hut1981] is a physically motivated computation of how tides operate in the radiative envelopes of massive stars.
 
 Run the simulation, and watch as the primary star first exhausts hydrogen before a phase of mass transfer starts.
 Tasks for this run:
 
-1. Plot the efficiency of mass transfer, and see how it evolves over the mass-transfer event
+1. Use `pg_binary` to plot the efficiency of mass transfer, and see how it evolves over the mass-transfer event
 {{< details title="Hint" closed="true" >}}
 Either expand the `History_panels1` in `inlist_pgbinary` by one panel, and plot the `eff_xfer_fraction` there, or add it to an already existing panel if the `_other_yaxis` is still free.
     {{< details title="Solution" closed="true" >}}
@@ -213,15 +231,15 @@ Either expand the `History_panels1` in `inlist_pgbinary` by one panel, and plot 
     {{< /details >}}
 {{< /details >}}
 
-2. Convince yourself of precisely how the accretion onto the secondary is handled.
+2. How does MESA handle the accretion onto the secondary? Is some condition met that prevents the star from accreting more?
 {{< details title="Hint" closed="true" >}}
 The terminal output should write things like: `fix w > w_crit: change mdot and redo`. Why would MESA write this?
 {{< details title="Explanation" closed="true" >}}
-MESA is changing the accretion rate of the secondary so that its rotation rate remains below $Omega_{\rm crit}$. The donor is supplying a certain amount of mass per unit time, and MESA needs to figure out how much of it to accept to keep the secondary star from spinning itself apart (ejecting the rest as a fast wind).
+MESA is changing the accretion rate of the secondary so that its rotation rate remains below $\Omega_{\rm crit}$. The donor is supplying a certain amount of mass per unit time, and MESA needs to figure out how much of it to accept to keep the secondary star from spinning so fast that it tears spins apart (ejecting the rest as a fast wind).
 {{< /details >}}
 {{< /details >}}
 
-3. Watch the rotation rate of the secondary closely.
+3. Watch the rotation rate of the accretor closely.
 {{< details title="Hint" closed="true" >}}
 Do you see anything peculiar about the profile of `omega_div_omega_crit`?
     {{< details title="Hang on now?!" closed="true" >}}
@@ -253,9 +271,9 @@ Do you see anything peculiar about the profile of `omega_div_omega_crit`?
     {{< /details >}}
 {{< /details >}}
 
-4. Establish what the tidal syncronization timescale is of the stars, and plot it.
+4. Establish what the tidal syncronization timescale is of the stars, and plot it. Compare it to the mass transfer timescale (especially for the accretor during mass transfer).
 {{< details title="Hint" closed="true" >}}
-Scour the list that `binary` defines as default history columns, in `binary_history_columns.list`. Uncommented entries you find there you can plot in `pgbinary` panels on the fly.
+Scour the list that `binary` defines as default history columns, in your `binary_history_columns.list`. Uncomment the entries you find there, and rerun your model to make sure you now have the output. You can use `pgbinary` panels to plot these values on the fly.
 
 {{< details title="Solution" closed="true" >}}
 Spot the following lines:
@@ -284,18 +302,20 @@ so we can plot:
 
 ### Run 3: Case B evolution: *You spin me 'round?*
 
-As of yet, there is no consensus as to how (non)-conservative mass transfer should or would be given a certain set of physics.
-Above, we modeled accretion happening in a system with weak tides, and that turned out to spin up the accretor star very rapidly, and cause very inefficient mass transfer.
-Many observed systems however indicate that conservative mass transfer is preferred.
+It is good to realize that since we model everything in 1D, our assumptions about how much mass transfer spins up the accretor, and how or where mass is lost is unavoidably based on some assumptions. There is no consensus on how (non)-conservative mass transfer should or would be given a certain set of physics.
 
-Historically, mass-transfer efficiency, $\epsilon$, has been characterized using 4 parameters: $\alpha$, $\beta$, $\gamma$, and $\delta$.
-We have that $\epsilon = 1 - \alpha - \beta - \delta$, and so if $\epsilon = 1$, mass transfer is conservative, and if $\epsilon = 0$ mass transfer is fully non-conservative.
-The parameters control whether we consider inefficiencies occur near the donor ($\alpha$), near the accretor ($\beta$), or through a circumbinary disk ($\delta$, and the disk has a dimensionless radius of $\gamma = \sqrt{R / a}$).
-In this run, we'll set up the physics to model this kind of accretion, and see the consequences this has on the structure of the stars and the evolution of the orbit.
+Above, we modeled accretion happening in a system with weak tides, and that turned out to spin up the accretor star very rapidly, causing very inefficient mass transfer (not much of the donated mass ended up being accreted by the companion).
+Many _observed_ systems indicate conservative mass transfer is preferred.
+
+Typically, we characterized mass-transfer efficiency, $\epsilon$, using 4 parameters: $\alpha$, $\beta$, $\gamma$, and $\delta$. The parameters control whether we consider the non-accreted mass to be lost from near the donor ($\alpha$), near the accretor ($\beta$), or from a circumbinary disk ($\delta$, and the disk has a dimensionless radius of $\gamma = \sqrt{R / a}$).
+We then define the mass transfer efficiency as $\epsilon = 1 - \alpha - \beta - \delta$. 
+If $\epsilon = 1$, mass transfer is conservative, while $\epsilon = 0$ means mass transfer is fully non-conservative.
+
+In this run, we'll set up the physics to model this kind of accretion, and see what consequences this has on the structure of the stars and the evolution of the orbit.
 
 When accreting, only the surface layers tend to spin up, while the deeper layers below still rotate quite slowly.
 This is because angular-momentum transport down to the core is not that efficient (we'll see more of this in the next lab).
-In this run, we're gonna take rotational effects the other way entirely, and we'll use our godly powers as `MESA` users to crank up the efficiency of angular-momentum transport artificially.
+In this run, we'll use our godly powers as `MESA` users to crank up the efficiency of angular-momentum transport artificially.
 
 > [!Important]
 > Copy the directory from Run 2 into a new folder for Run 3 (again, so that you'll have nicely separated final models and inlist sets for every run).
@@ -355,7 +375,7 @@ Your star's spin should correlate with its size. The star will puff up when acce
 The synchronization timescale is of order $10^{-1} {\rm yr}$, which is way shorter than the typical integration step (see the `log_dt` graph). Hence the star is quickly synchronized to the orbital period.
 {{< /details >}}
 
-- Record the final masses and period into the [Google Sheet](https://docs.google.com/spreadsheets/d/1a5gx9o0_MCAnP_3dU2xA3I60lQkIN1NhjYG9Ea-OxSw/edit?usp=sharing). Compare with the value that Soberman et al., 1997 predicts from angular-momentum-balance arguments (automatically calculated in column K). How would you explain any discrepancy between Soberman's and your obtained number?
+- Record the final masses and period into the [Google Sheet](https://docs.google.com/spreadsheets/d/1a5gx9o0_MCAnP_3dU2xA3I60lQkIN1NhjYG9Ea-OxSw/edit?usp=sharing). Compare with the value that Soberman et al. (1997)[^soberman1997] predicts from angular-momentum-balance arguments (automatically calculated in column K). How would you explain any discrepancy between Soberman's and your obtained number?
 {{< details title="Solution" closed="true" >}}
 Soberman's calculation does not take gravitational radiation, spin-orbit coupling (through tides), and wind-mass loss into account. These are all extra terms one would have to take into account when calculation the final period.
 {{< /details >}}
@@ -494,3 +514,14 @@ Conversely, since $\beta \geq 0$, the mininum mass of the secondary is $4.8 M_\o
 
 Of course, these numbers are very approximate, and the precise final results depend on the detailed physics (in particular overshooting which will change the helium core mass independent of the initial mass, tides (which we assumed were super effective), etc...)
 {{< /details >}}
+
+
+
+***
+***
+
+
+## References
+[^offner2023]: [Offner et al. (2023), Multiplicity and Binarity in Star Formation](https://ui.adsabs.harvard.edu/abs/2023ASPC..534..275O/abstract)
+[^soberman1997]: [Soberman et al. (1997), Stability criteria for mass transfer in binary stellar evolution](https://ui.adsabs.harvard.edu/abs/1997A%26A...327..620S/abstract)
+[^hut1981]: [Hut, P. (1981), Tidal evolution in close binary systems](https://ui.adsabs.harvard.edu/abs/1981A%26A....99..126H/abstract)

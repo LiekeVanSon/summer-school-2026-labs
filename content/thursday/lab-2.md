@@ -384,7 +384,7 @@ For the TS dynamo, we can turn it off or apply a flat intensity modifier through
 s% other_am_mixing => TSF_Fuller_Lu22
 ```
 
-While based on the fundamental physical mechanisme (the Tayler instability), the AM transport model by Fuller & Lu (2022) is significicantly stronger than the standard TS dynamo. To turn it on, we must modify `inlist_star` so that
+While based on the fundamental physical mechanisme (the Tayler instability), the AM transport model by Fuller & Lu (2022)[^fullerlu2022] is significicantly stronger than the standard TS dynamo. To turn it on, we must modify `inlist_star` so that
 
 ```fortran
 &controls
@@ -440,3 +440,6 @@ After uploading your profile, you can try running the notebook online. It should
 ## Conclusions
 
 By the end of this lab, we have encountered first-hand the most dramatic difference between CHE and non-CHE stars --- their compactness, driven by rotation-driven Eddington-Sweet circulation ---, and how post-MS evolution can decouple the surface and core rotation rates.  We have also learned how to compute the BH spin corresponding to a He core, and how that assumption does not trivially hold. As we will return to in Lab 3, accretion can also spin stars up, but under very different circumstances from CHE, and the stellar-BH spin connection remains a fresh  topic.
+
+## References
+[^fullerlu2022]: [Fuller & Lu (2022), Angular momentum transport in massive stars](https://ui.adsabs.harvard.edu/search/q=author%3A%22Fuller%2C%20J%22%20author%3A%22Lu%2C%20W%22%20year%3A2022&sort=date%20desc%2C%20bibcode%20desc&p_=0)

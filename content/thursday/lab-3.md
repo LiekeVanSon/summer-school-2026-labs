@@ -537,18 +537,14 @@ Inside your `inlist1`:
 
 
 ### Computing the time delay
+<a id="eq-tdelay"></a>
 Compact binaries composed of neutron stars and BHs gradually lose orbital energy through the emission of gravitational waves. As a consequence, the orbit shrinks over time until the two compact objects eventually merge.  
 
 The **gravitational-wave time delay** (or simply *delay time*) is the time required for this inspiral and merger to occur **if gravitational-wave emission were the only process acting on the binary orbit**. Delay times are particularly important in astrophysics because they determine *when* mergers happen relative to the formation of the stars, and therefore affect the populations of gravitational-wave sources observed by detectors such as LIGO, Virgo and KAGRA[^GWTC4].
 
 For a circular orbit, the merger timescale derived by Peters (1964)[^peters1964] is
 
-$$
-t_{\rm delay} =
-\frac{5}{256}
-\frac{c^5 a^4}
-{G^3 m_1 m_2 (m_1 + m_2)} ,
-$$
+$$t_{\rm delay} =\frac{5}{256}\frac{c^5 a^4}{G^3 m_1 m_2 (m_1 + m_2)} ,\,\tag{1}$$
 
 where:
 
@@ -803,11 +799,11 @@ $$\dot{J}_{\mathrm{ml}}=\dot{J}_{\mathrm{isotropic}}+\dot{J}_{\mathrm{L2}},$$
 
 where these $\dot{J}$ is the time derivative of the angular momentum component $J$ (and "ml" = mass loss). The angular momentum loss associated with matter expelled through the $L_2$ point can be written as
 
-$$\dot{J}_{\mathrm{L2}}=\upsilon\times\dot{M}_{\mathrm{MT}}\left[\left(\frac{m_{\mathrm{accretor}}}     {M_{\mathrm{accretor}} + M_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,$$
+$$\dot{J}_{\mathrm{L2}}=\upsilon\times\dot{M}_{\mathrm{MT}}\left[\left(\frac{m_{\mathrm{accretor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,$$
 
 while the standard isotropic re-emission contribution is
 
-$$\dot{J}_{\mathrm{isotropic}}=\beta\times\dot{M}_{\mathrm{MT}}\left(\frac{M_{\mathrm{donor}}}     {M_{\mathrm{accretor}} + M_{\mathrm{donor}}}a\right)^2\frac{2\pi}{P} .$$
+$$\dot{J}_{\mathrm{isotropic}}=\beta\times\dot{M}_{\mathrm{MT}}\left(\frac{m_{\mathrm{donor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}a\right)^2\frac{2\pi}{P} .$$
 
 Here:
 
@@ -1052,7 +1048,7 @@ end function find_L2
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-  Since you're in `$MESA_DIR/binary/defaults/binary_controls.defaults`, give a look at the meaning and the default values of all these controls: <code>mass_transfer_alpha</code>, <code>mass_transfer_delta</code>, <code>mass_transfer_gamma</code>.
+  In `$MESA_DIR/binary/defaults/binary_controls.defaults`, give a look at the meaning and the default values of all these controls: <code>mass_transfer_alpha</code>, <code>mass_transfer_delta</code>, <code>mass_transfer_gamma</code>.
 
   Additionally, remember that you have set this in `inlist_project`
   ```fortran
@@ -1570,20 +1566,65 @@ Only if they had the time in minilab1 to do caseB. -->
 
 
 ## 2. Common envelope evolution
-Brief explanation of the mechanism
+Common envelope (CE) evolution is a phase during which the envelope of the donor star engulfs the whole binary. The embedded system experiences strong drag forces while orbiting inside the envelope, causing the orbit to shrink and orbital energy to be transferred to the gas. Friction, shocks, and recombination energy are thought to help unbind part of the envelope, often leaving behind circumstellar material around the system. Observationally, CE events are frequently associated with luminous red novae (see [V1309 Sco](https://en.wikipedia.org/wiki/V1309_Scorpii), the “Rosetta stone” of this class of transients 💥).
 
-Unstable MT rate: KH timescale
+<a id="eq-MKH"></a>
+**CE occurs** when mass transfer becomes unstable. This can happen **in binaries with very extreme mass ratios** (i.e. the donor is much more massive than the accretor), or when the donor star is highly evolved and possesses a deep convective envelope. In these situations, mass transfer may initially proceed stably, but the donor envelope may not be able to shrink fast enough to remain inside its Roche lobe. The resulting runaway increase in mass-transfer rate creates a positive feedback loop: mass loss shrinks the Roche lobe and simultaneously drives further expansion of the donor envelope. There is currently no consensus on the condition for when this process becomes irreversible (i.e., **the actual CE onset**), but a rule of thumb is to **compare the mass-transfer rate $\dot{M}_{\mathrm{MT}}$ to the Kelvin–Helmholtz timescale $t_{\mathrm{KH}}$ of the donor** and define the onset of CE when
 
-Usually: low mass ratios and high periods favor instability
+$$\dot{M}_{\mathrm{MT}}\gtrsim10 \times \frac{m_{\mathrm{donor}}}{t_{\mathrm{KH}}} .\,\tag{4}$$
 
-Observational fun fact (luminous red novae)
+The final outcome of CE evolution is highly uncertain because the process is intrinsically three-dimensional and hydrodynamical (thus computationally expensive to simulate). In some cases the binary merges completely if the inspiral is too strong; in others, **the envelope is successfully ejected and the binary survives with a much tighter orbit.** In literature, the final orbital separation post-CE, $a_{\mathrm{post-CE}}$, is commonly computed using the *energy formalism*[^ivanova2013]. In this framework, the binding energy of the donor envelope is assumed to be balanced by a fraction of the released orbital energy:
+
+$$E_{\mathrm{bind}}=\alpha_{\mathrm{CE}}\Delta E_{\mathrm{orb}}=\alpha_{\mathrm{CE}}\frac{G}{2}\left(\frac{(m_{\mathrm{donor,i}}-m_{\mathrm{env}})m_{\mathrm{accretor,f}}}{a_{\mathrm{post-CE}}}-\frac{m_{\mathrm{donor,i}}m_{\mathrm{accretor,i}}}{a_{\mathrm{i}}}\right) .$$
+
+Solving for the post-common-envelope separation gives
+
+$$a_{\mathrm{post-CE}}=(m_{\mathrm{donor,i}}-m_{\mathrm{env}})m_{\mathrm{accretor,f}}\left(\frac{2E_{\mathrm{bind}}}{\alpha_{\mathrm{CE}}G}+\frac{m_{\mathrm{donor,i}}m_{\mathrm{accretor,i}}}{a_{\mathrm{i}}}\right)^{-1} .\,\tag{5}$$
+
+Here:<a id="eq-ebind"></a>
+
+- $m_{\mathrm{donor,i}}$ is the donor mass at CE onset, and $m_{\mathrm{env}}$ is the mass of the donor envelope, such that one can assume $m_{\mathrm{donor,i}} - m_{\mathrm{env}}=m_{\mathrm{He\:core}}$, i.e. the remaining Helium core of the donor star,
+- $m_{\mathrm{accretor,i}}$ and $m_{\mathrm{accretor,f}}$ are the accretor masses at onset and post-CE, usually assumed to be equal: $m_{\mathrm{accretor,i}}=m_{\mathrm{accretor,f}}$,
+- $a_{\mathrm{i}}$ is the orbital separation at CE onset,
+- $a_{\mathrm{post-CE}}$ is the orbital separation post-CE,
+- $G$ is the gravitational constant,
+- $\alpha_{\mathrm{CE}}$ is the CE efficiency parameter, usually assumed to be $\alpha_{\mathrm{CE}}\simeq 1$,
+- $E_{\mathrm{bind}}$ is the binding energy of the donor envelope. This can be
+  estimated by integrating the gravitational and internal energy of the envelope layers:
+
+  
+  $$E_{\mathrm{bind}}=\int_{m_{\mathrm{He\:core}}}^{m_{\mathrm{donor}}}\left(-\frac{Gm}{r}+u-\epsilon_{\mathrm{diss}}\right)\, dm ,\,\tag{6}$$
+
+  and $m$ is the mass enclosed within a shell, $r$ is the radius of the shell, $u$ is the specific internal energy, $\epsilon_{\mathrm{diss}}$ is the correction due to molecular hydrogen dissociation energy, $dm$ is the mass of the shell.
+
 
 > [!IMPORTANT]
-> Our aim is to explore whether CE evolution can tighten the orbit of our star + BH system such that we produce gravitational waves.
-> So we are interested in the final fate, with the energy formalism
+> In the context of gravitational wave sources, CE has been classically invoked as a way to form double BHs binaries, due to its efficient tightening of the orbit of star + BH systems prior to the evolution into BH + BH binaries. Pretty much as the stable mass transfer channels that we have seen above 😁 **The aim of this exercise is to explore how CE evolution can form gravitational wave sources and compare its outcome to the stable mass transfer channel**.
+>
+> You can start from the same setup as you developed for the Case A mass transfer (also downloadable <a href="/thursday/lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
+> ```bash
+> cp -r stable_MT CE
+>```
+> Remind yourself of the properties of your Case A system in [Table 1](#table-caseA). In particular, look at the mass ratio: $\sim 0.4$. This is a very mild mass ratio, and in fact the mass transfer between star + BH was stable! Let's **change the BH mass to $5\:M_{\odot}$: this gives us a very extreme mass ratio ($\sim 0.1$) that will favor CE evolution instead** 😎
+> {{< details title="Solution for `inlist_project`" closed="true" >}}
+>```fortran
+>&binary_controls
+>  ...
+>  m1 = 39.6d0 ! donor mass in Msun
+>  m2 = 5d0 ! companion mass in Msun
+>  initial_period_in_days = 4.5d0
+>  ...
+>/ ! end of binary_controls namelist
+>```
+>{{< /details >}}
+
+> [!CAUTION]
+> In principle, if you ran your setup as is, it will work: the primary will evolve on its Main Sequence, initiate a Case A mass transfer episode, and reach very high mass transfer rates. MESA will start complaining with smaller and smaller timesteps, several retries, convergence issues. **This regime is not only numerically challenging and expensive for the solver, but also quite meaningless, as CE is inherently a 3D-hydro process** on the dynamical timescale and out of hydrostatic equilibrium!
 
 > [!NOTE]
-> MESA actually has a suite of routines for modeling the CE stage! But we will not make use of those. If you are curious, you can give a look at [last year's Summer School binary day](https://mesa-leuven.4d-star.org/tutorials/wednesday/lab-3). What we will do instead is to force a very extreme mass ratio, and stop at onset!!
+> 1. MESA actually has a suite of routines for modeling the CE stage in 1D in the most physically-motivated possible way (mostly following the formalism from Marchant et al. (2021)[^marchant2021])! We will not make use of these, but if you are curious, you can give a look at [last year's Summer School binary day](https://mesa-leuven.4d-star.org/tutorials/wednesday/lab-3). We will instead **stop our simulation at CE onset, and use the energy formalism to predict the post-CE properties of our binary.**
+> 2. When you want to **pass information between `run_star_extras.f90` and `run_binary_extras.f90`** (for example, if you calculate something in `data_for_extra_history_columns` and you want to use that quantity in `data_for_extra_binary_history_columns`, you can use the `s% xtra` array!)
+> 3. If you don't know how quantities are called, you can check `$MESA_DIR/star_data/public/star_data_step_work.inc` for the `s%` structure, and `$MESA_DIR/binary/public/binary_data.inc` for the `b%` structure.
 
 <div style="
   margin:1rem 0;
@@ -1596,9 +1637,241 @@ Observational fun fact (luminous red novae)
     🧪 Task: Modify <code>run_star_extras.f90</code>
   </div>
 
-Let's implement 
-1. An extra history column `Ebind` for the binding energy $E_{\mathrm{bind}}$ of the hydrogen envelope of our star, in $\mathrm{erg}$, and show its value in the Text Summary window of `pgstar`.
-2. A stopping condition at the onset of the common envelope episode, i.e. when the mass transfer rate exceeds $10\times\dot{M}_{\mathrm{KH}}$.
+Calculate an extra history column `Ebind(erg)` for the binding energy $E_{\mathrm{bind}}$ of the hydrogen envelope of our star, in $\mathrm{erg}$ (<a href="#eq-ebind">Eq. (6)</a>).
+</div>
+
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>Why is <code>run_star_extras.f90</code> empty...? </strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  Your `run_star_extras.f90` looks kinda empty because it is reading running the standard routines in `standard_run_star_extras.inc`. We need to copy those routines in here and modify them. Do you remember where they are? You can always do a 
+  
+  ```bash
+  `grep -nri standard_run_star_extras.inc $MESA_DIR/star`
+  ```
+  
+  in your terminal and try to find the file yourself.
+
+  </div>
+</details>
+
+{{< details title="Solution" closed="true" >}}
+Copy the entire content of `$MESA_DIR/star/job/standard_run_star_extras.inc` in place of the line `include 'standard_run_star_extras.inc'`.
+{{< /details >}}
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>Remember how to loop?</strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  You can loop over the star's shells with a fortran loop from `k=1` (surface) to `k=s% nz` (center). Watch out: in <a href="#eq-ebind">Eq. (6)</a> you have an integral from the (He-rich) core of the star to the surface, so you'll want your loop to go through only hydrogen-rich shells, to compute the `Ebind` of the envelope.
+
+  You can check whether the shells are hydrogen-rich with something like `s% X(k) > 0.1d0`, where `s% X(k)` is the hydrogen mass fraction at the mass shell `k`.
+
+  </div>
+</details>
+
+{{< details title="Skeleton of your loop" closed="true" >}}
+```fortran
+do k=1, s% nz
+  if (s% X(k) > 0.1d0) then
+      Ebind = ...
+  else
+      exit
+  end if
+end do
+```
+{{< /details >}}
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(236, 72, 153, 0.14);
+    border-left:4px solid rgba(236, 72, 153, 0.14);
+  ">
+    🎁 <strong>Gift: Hydrogen dissociation energy!</strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(236, 72, 153, 0.14);
+    border-left:4px solid rgba(236, 72, 153, 0.14);
+  ">
+
+  This is another gift for you (for the sake of time, but it is still an interesting exercise to get to know several MESA constants in `$MESA_DIR/const/public/const_def.f90`). This is how you can code the molecular hydrogen dissociation energy $\epsilon_{\mathrm{diss}}$ in the calculation of `Ebind(erg)`:
+
+  ```fortran
+  avo*4.52d0/2d0*ev2erg*s% X(k)
+  ```
+
+  {{< details title="Curious to understand why?" closed="true" >}}
+The hydrogen dissociation energy contribution enters the integrand of <a href="#eq-ebind">Eq. (6)</a> as
+
+$$\epsilon_{\mathrm{diss}}=\frac{N_A \, E_{\mathrm{H_2}}}{2}\, X ,$$
+
+Here $E_{\mathrm{H_2}} = 4.52\,\mathrm{eV}$ is the dissociation energy of molecular hydrogen, $N_A$ (`avo`) is Avogadro’s number, `ev2erg` converts eV to erg, and $X = s\%X(k)$ is the hydrogen mass fraction in each zone. The factor $1/2$ accounts for the two hydrogen atoms per $\mathrm{H_2}$ molecule, giving the energy per gram of stellar material.
+{{< /details >}}
+
+  </details>
+
+
+  </div>
+</details>
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>Mind the units... </strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  You want <a href="#eq-ebind">Eq. (6)</a> to give you a quantity in $\mathrm{erg}$, the cgs unit for energy. So be sure to check all the units in `$MESA_DIR/star_data/public/star_data_step_work.inc`.
+
+  </div>
+</details>
+
+{{< details title="Full solution for `Ebind(erg)`" closed="true" >}}
+```fortran
+subroutine data_for_extra_history_columns(id, n, names, vals, ierr)
+  integer, intent(in) :: id, n
+  character (len=maxlen_history_column_name) :: names(n)
+  real(dp) :: vals(n)
+  real(dp) :: Ebind
+  integer :: k
+  integer, intent(out) :: ierr
+  type (star_info), pointer :: s
+  ierr = 0
+  call star_ptr(id, s, ierr)
+  if (ierr /= 0) return
+
+  ! note: do NOT add the extras names to history_columns.list
+  ! the history_columns.list is only for the built-in history column options.
+  ! it must not include the new column names you are adding here.
+
+  names(1)="Ebind(erg)"
+  Ebind = 0d0
+  do k=1, s% nz
+    if (s% X(k) > 0.1d0) then
+        Ebind = Ebind + s% dm(k)*(-standard_cgrav*s% m(k)/s% r(k)+s% energy(k)-avo*4.52d0/2d0*ev2erg*s% X(k))
+    else
+        exit
+    end if
+  end do
+  vals(1) = Ebind
+
+end subroutine data_for_extra_history_columns
+```
+{{< /details >}}
+
+<div style="
+  margin:1rem 0;
+  padding:0.8rem 1rem;
+  background:rgba(16,185,129,0.10);
+  border-left:5px solid #10b981;
+">
+
+  <div style="font-weight:600; margin-bottom:0.5rem;">
+    🧪 Task: Modify <code>run_binary_extras.f90</code>
+  </div>
+
+Let's implement a stopping condition at the onset of the common envelope episode, i.e. when the mass transfer rate exceeds $10\times\dot{M}_{\mathrm{KH}}$ (<a href="#eq-MKH">Eq. (4)</a>), and let's show this mass transfer threshold on the `pgstar` window.
+</div>
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>MESA already computes <code>kh_timescale</code> 🤓</strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+   <a href="#eq-MKH">Eq. (4)</a> 
+
+  </div>
+</details>
+
+{{< details title="Solution" closed="true" >}}
+```fortran
+do k=1, s% nz
+  if (s% X(k) > 0.1d0) then
+      Ebind = ...
+  else
+      exit
+  end if
+end do
+```
+{{< /details >}}
+
+<div style="
+  margin:1rem 0;
+  padding:0.8rem 1rem;
+  background:rgba(16,185,129,0.10);
+  border-left:5px solid #10b981;
+">
+
+  <div style="font-weight:600; margin-bottom:0.5rem;">
+    🧪 Task: Modify <code>run_binary_extras.f90</code>
+  </div>
+
+If you have time, try to implement:
+1. ⭐️**BONUS**⭐️ $P_{\mathrm{post-CE}}$ in days as an extra history column `P_postCE(days)`, and show its value in the Text Summary window of `pgstar` -> this task will teach you how to transport information from `run_star_extras.f90` to `run_binary_extras.f90` with `s% xtra`!
+2. ⭐️**BONUS**⭐️ $t_{\mathrm{delay,\:post-CE}}$ in Gyrs as an extra history column `tdelay_postCE(Gyr)`, and show its value in the Text Summary window of `pgstar`-> there's nothing difficult in this task, it is basically the same calculation as you did in [here](#computing-the-time-delay) for <a href="#eq-tdelay">Eq. (1)</a>
+   
+>[!CAUTION]
+>🚨🚨 No problem if you don't have time to try, but still copy the full solution from here into your `run_binary_extras.f90`:
+>{{< details title="Fully solved `data_for_extra_binary_history_columns`" closed="true" >}}
+>```fortran
+>do k=1, s% nz
+>  if (s% X(k) > 0.1d0) then
+>      Ebind = ...
+>  else
+>      exit
+>  end if
+>end do
+>```
+>{{< /details >}}
 </div>
 
 > [!WARNING]
@@ -1632,7 +1905,7 @@ Let's implement
     text-align: center;
   ">
     <p style="margin: 0;">
-      Run your common envelope model.<br>
+      Run your common envelope model with <code>./rn | tee output.txt</code>.<br>
       In case you need them, here are the complete inlists for this run:
       <a href="/thursday/lab3/common_envelope_SOL.zip" download>
         <code>common_envelope_SOL.zip</code>
@@ -1664,8 +1937,6 @@ Here are some discussion points; you will only need to look at [Figure 4](#fig-C
 
 {{< /details >}}
 
-Now open this Google colab notebook (${\color{red} \mathrm{TO\: DO}}$) in which we provide pre-made formulas to use the energy formalism and asses the final fate of your binary, after the common envelope episode.
-
 2. Did you produce a gravitational wave source?
       {{< details title="Solution" closed="true" >}}
 
@@ -1691,8 +1962,8 @@ Now open this Google colab notebook (${\color{red} \mathrm{TO\: DO}}$) in which 
 [^GWTC4]: [The LIGO Scientific Collaboration, the Virgo Collaboration, the KAGRA Collaboration, et al. (2025a), GWTC-4.0: Updating the Gravitational-Wave Transient Catalog with Observations from the First Part of the Fourth LIGO-Virgo-KAGRA Observing Run](https://arxiv.org/abs/2508.18082)
 [^lu2022]: [Lu et al. (2022), Stable mass transfer via L2 outflows in massive binaries](https://ui.adsabs.harvard.edu/abs/2023MNRAS.519.1409L)
 [^marchant2021]: [Marchant et al. (2021), The role of mass transfer and common envelope evolution in the formation of merging binary black holes](https://ui.adsabs.harvard.edu/abs/2021A&A...650A.107M)
-
 [^bowler2010]: [Bowler (2010), Interpretation of observations of the circumbinary disk of SS 433](https://ui.adsabs.harvard.edu/abs/2010A%26A...521A..81B)
+[^ivanova2013]: [Ivanova et al. (2013), Common envelope evolution: where we stand and how we can move forward](https://ui.adsabs.harvard.edu/abs/2013A&ARv..21...59I)
 
 <!-- #### ➕ BONUS1: CASE B comparison!
 Only if they had the time in minilab1 to do caseA.
