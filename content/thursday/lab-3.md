@@ -43,12 +43,12 @@ In this last minilab3 we will pick up on the system you evolved in minilab1 and 
   <tr>
   <td>Final model</td>
   <td>
-    <a href="/thursday/lab3/final1_caseA.mod" download>
+    <a href="../lab3/final1_caseA.mod" download>
       <code>final1_caseA.mod</code>
     </a>
   </td>
   <td>
-    <a href="/thursday/lab3/final2_caseA.mod" download>
+    <a href="../lab3/final2_caseA.mod" download>
       <code>final2_caseA.mod</code>
     </a>
   </td>
@@ -737,7 +737,7 @@ Text_Summary1_name(8,4) = 'tdelay(Gyr)'
     <p style="margin: 0;">
       Run your star + BH model with <code>./rn | tee output.txt</code>.<br>
       In case you need them, here are the complete inlists for this run:
-      <a href="/thursday/lab3/stable_MT_SOL.zip" download>
+      <a href="../lab3/stable_MT_SOL.zip" download>
         <code>stable_MT_SOL.zip</code>
       </a>
     </p>
@@ -750,13 +750,13 @@ Your `pgstar` window should look like something like this (this is the very last
 <!-- ![pgstar_stable_caseA_new](/thursday/lab3/pgstar_stable_caseA_new.png) -->
 <a id="fig-caseA"></a>
 
-<a href="/thursday/lab3/pgstar_stable_caseA_new.png" target="_blank">
-  <img src="/thursday/lab3/pgstar_stable_caseA_new.png" alt="Case A figure">
+<a href="../lab3/pgstar_stable_caseA_new.png" target="_blank">
+  <img src="../lab3/pgstar_stable_caseA_new.png" alt="Case A figure">
 </a>
 
 **Figure 1.** Stable mass transfer, Case A evolution for a star + BH binary (click to zoom in!).
 
-- Make sure that the **Kippenhahn diagram** shows nice convective zones (filled in light blue) and the Helium core (the solid green line). If it is the case, you did well in putting `mixing_regions 10` in `history_columns.list` (as indicated in this [section](#modify-history_columnslist)) ☺️ Otherwise, no problem. Do it now, as we will look into the Kippenhahn diagram for a later run. You can also download the correct file <a href="/thursday/lab3/history_columns.list" download> <code>here</code></a>.
+- Make sure that the **Kippenhahn diagram** shows nice convective zones (filled in light blue) and the Helium core (the solid green line). If it is the case, you did well in putting `mixing_regions 10` in `history_columns.list` (as indicated in this [section](#modify-history_columnslist)) ☺️ Otherwise, no problem. Do it now, as we will look into the Kippenhahn diagram for a later run. You can also download the correct file <a href="../lab3/history_columns.list" download> <code>here</code></a>.
 - Check that the **info about the `tdelay(Gyr)`** column is appearing in the Text Summary, as you can see in here. If not, you may have done something wrong with the implementation... You can try again, but if you're short on time, just look at the [Figure 1](#fig-caseA) (click to zoom in!) to answer to the Analysis of the run questions here below.
 
 ### Analysis of the run: Case A mass transfer!
@@ -788,8 +788,8 @@ However, this is not the only possible way for matter to leave the binary. 3D hy
 Because the $L_2$ point is located farther away from the center of mass than the accretor itself, material escaping through $L_2$ carries away **much more angular momentum** than in the isotropic re-emission case.
 
 <a id="fig-L2"></a>
-<a href="/thursday/lab3/L2_outflow.jpeg" target="_blank">
-  <img src="/thursday/lab3/L2_outflow.jpeg" alt="L2 outflow" style="max-width:700px; width:100%;">
+<a href="../lab3/L2_outflow.jpeg" target="_blank">
+  <img src="../lab3/L2_outflow.jpeg" alt="L2 outflow" style="max-width:700px; width:100%;">
 </a>
 **Figure 2.** Schematics[^lu2022] of $L_2$ outflow in a binary, where the $\Phi$s indicate different levels of gravitational equipotential; $L_1$ is the first Lagrangian point (through which material can flow). 
 
@@ -825,7 +825,7 @@ $L_2$ mass outflow has been associated observationally with **circumbinary outfl
 > [!IMPORTANT]
 >In the context of gravitational wave sources, $L_2$ mass outflow is expected to efficiently tighten star + BH binaries that are residing in quite wide orbits, so that after the detachment, the binary will be already close enough to start chirping at the formation of the second BH! **In this part of the minilab3, we will demonstrate that, in presence of $L_2$ mass outflow, a wide binary, like the Case B system you produced in minilab1, can form a gravitational wave source after stable mass transfer.**
 >
-> You can start from the same setup as you developed so far (also downloadable <a href="/thursday/lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
+> You can start from the same setup as you developed so far (also downloadable <a href="../lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
 > ```bash
 > cp -r stable_MT stable_MT_L2
 >```
@@ -1519,7 +1519,7 @@ History_Panels1_other_yaxis_name(2) = 'lg_mdot_L2'
     <p style="margin: 0;">
       Run your star + BH model with L2 outflow.<br>
       In case you need them, here are the complete inlists for this run:
-      <a href="/thursday/lab3/stable_MT_L2_SOL.zip" download>
+      <a href="../lab3/stable_MT_L2_SOL.zip" download>
         <code>stable_MT_L2_SOL.zip</code>
       </a>
     </p>
@@ -1532,8 +1532,8 @@ Your `pgstar` window should look like something like this (this is the very last
 <!-- ![pgstar_stable_caseB](/thursday/lab3/pgstar_stable_caseB_new.png) -->
 <a id="fig-caseB"></a>
 
-<a href="/thursday/lab3/pgstar_stable_caseB_new.png" target="_blank">
-  <img src="/thursday/lab3/pgstar_stable_caseB_new.png" alt="Case B figure">
+<a href="../lab3/pgstar_stable_caseB_new.png" target="_blank">
+  <img src="../lab3/pgstar_stable_caseB_new.png" alt="Case B figure">
 </a>
 
 **Figure 3.** Stable mass transfer, Case B evolution for a star + BH binary (click to zoom in!).
@@ -1601,7 +1601,7 @@ Here:<a id="eq-ebind"></a>
 > [!IMPORTANT]
 > In the context of gravitational wave sources, CE has been classically invoked as a way to form double BHs binaries, due to its efficient tightening of the orbit of star + BH systems prior to the evolution into BH + BH binaries. Pretty much as the stable mass transfer channels that we have seen above 😁 **The aim of this exercise is to explore how CE evolution can form gravitational wave sources and compare its outcome to the stable mass transfer channel**.
 >
-> You can start from the same setup as you developed for the Case A mass transfer (also downloadable <a href="/thursday/lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
+> You can start from the same setup as you developed for the Case A mass transfer (also downloadable <a href="../lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
 > ```bash
 > cp -r stable_MT CE
 >```
@@ -1907,7 +1907,7 @@ If you have time, try to implement:
     <p style="margin: 0;">
       Run your common envelope model with <code>./rn | tee output.txt</code>.<br>
       In case you need them, here are the complete inlists for this run:
-      <a href="/thursday/lab3/common_envelope_SOL.zip" download>
+      <a href="../lab3/common_envelope_SOL.zip" download>
         <code>common_envelope_SOL.zip</code>
       </a>
     </p>
@@ -1920,8 +1920,8 @@ Your `pgstar` window should look like something like this (this is NOT the very 
 <!-- ![pgstar_CE_caseA](/thursday/lab3/pgstar_CE_caseA.png) -->
 <a id="fig-CEcaseA"></a>
 
-<a href="/thursday/lab3/pgstar_CE_caseA.png" target="_blank">
-  <img src="/thursday/lab3/pgstar_CE_caseA.png" alt="CE case A figure">
+<a href="../lab3/pgstar_CE_caseA.png" target="_blank">
+  <img src="../lab3/pgstar_CE_caseA.png" alt="CE case A figure">
 </a>
 
 **Figure 4.** Common envelope evolution at its onset for a star + BH binary (click to zoom in!).
