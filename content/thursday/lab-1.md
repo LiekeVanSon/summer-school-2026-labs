@@ -6,6 +6,9 @@ math: true
 toc: true
 ---
 
+<span style="color: #e7876c;">Timing: approximately 1 hour</span>
+
+
 ## Overview
 
 Massive stars ($M \gtrsim 8 M_{\odot}$) are overwhelmingly part of binary (or even higher order) systems.

@@ -10,6 +10,10 @@ toc: true
 
 <!-- # Lab 3: Stable relationships -->
 
+
+<span style="color: #e7876c;">Timing: approximately 2 hours divided into 2 x 1 hour blocks </span>
+
+
 ## Introduction
 
 In this last minilab3 we will pick up on the system you evolved in minilab1 and follow its further evolution into a double black hole binary. Remember that at the end of your minilab1 you had two systems: 
@@ -43,12 +47,12 @@ In this last minilab3 we will pick up on the system you evolved in minilab1 and 
   <tr>
   <td>Final model</td>
   <td>
-    <a href="../lab3/final1_caseA.mod" download>
+    <a href="/thursday/lab3/final1_caseA.mod" download>
       <code>final1_caseA.mod</code>
     </a>
   </td>
   <td>
-    <a href="../lab3/final2_caseA.mod" download>
+    <a href="/thursday/lab3/final2_caseA.mod" download>
       <code>final2_caseA.mod</code>
     </a>
   </td>
@@ -176,7 +180,7 @@ history_interval = 1
 ```
 
 #### Modify `controls` in `inlist1`
-We will add a lot of options here that involve the individual stripped star model. Most of them are purely to make the run faster; we add also a prescription for the convective overshooting and a terminating condition at core-Helium depletion. Going through everything is beyond the scope of this lab (we are focusing on binaries here 🙃 and you have seen many of these already in the previous days), but feel free to dig into them! Remember that the exact purpose of each of these controls can be checked in the defaults file `$MESA_DIR/star/defaults/controls.defaults`.
+We will add a lot of options here that involve the individual stripped star model. Most of them are purely to make the run faster; we add also a prescription for the convective overshooting and a terminating condition at core-Helium depletion. Going through everything is beyond the scope of this lab (we are focusing on binaries here 🙃 and you have seen many of these already in the previous days), but feel free to dig into them later if you have time! Remember that the exact purpose of each of these controls can be checked in the defaults file `$MESA_DIR/star/defaults/controls.defaults`.
 
 {{< details title="Modified `controls` for `inlist1`" closed="true" >}}
 ```fortran
@@ -515,7 +519,7 @@ Load the right model from your <code>minilab1</code> in your `inlist1`.
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-  Try your luck by checking inside `$MESA_DIR/star/defaults/star_job.defaults`. You can search for the string `load`...
+  Checking inside `$MESA_DIR/star/defaults/star_job.defaults`. You can search for the string `load`...
 
   </div>
 </details>
@@ -555,7 +559,7 @@ where:
 
 Notice the strong dependence $t_{\rm delay} \propto a^4$: even modestly wider binaries can take dramatically longer to merge. The dependence on the masses is a bit weaker, but the rule of thumb is that more massive systems will merge faster.
 
-In practice, delay times are often expressed in **Gigayears (Gyr)**, where $1~{\rm Gyr} = 10^9$ years, because this makes it easy to compare them to the age of the Universe ($\approx 13.8$ Gyr). This comparison tells us whether a compact binary has enough time to merge within cosmic history: binaries with $t_{\rm delay} \lesssim 13.8$ Gyr may merge and be observable today as gravitational-wave sources, while systems with longer delay times are effectively undetectable (technically, they have "not yet happened" anywhere in the Universe 🤓).
+In practice, delay times are often expressed in **Gigayears (Gyr)**, where $1~{\rm Gyr} = 10^9$ years, because this makes it easy to compare them to the age of the Universe $\approx 13.8$ Gyr). This comparison tells us whether a compact binary has enough time to merge within cosmic history: binaries with $t_{\rm delay} \lesssim 13.8$ Gyr may merge and be observable today as gravitational-wave sources, while systems with longer delay times are effectively undetectable (technically, they have "not yet happened" anywhere in the Universe 🤓).
 
 > [!Note]
 > Remember that **so far, you have initialized a system with a star + BH**, since you have collapsed all the mass of the stripped star of minilab1 into a point mass <code>m2</code>, and initialized your <code>m1</code> to be the accretor of minilab1. **After evolving your system further**, your <code>m1</code> will reach Helium depletion in its core, and at the point it will very close to become the second BH of your system: that's how **you will achieve a BH + BH binary**! From that point onwards, the $t_{\mathrm{delay}}$ calculation will make sense, as the interaction between the two BHs is expected to be only via gravity.
@@ -579,7 +583,7 @@ In practice, delay times are often expressed in **Gigayears (Gyr)**, where $1~{\
     🧪 Task: Modify <code>run_binary_extras.f90</code>
   </div>
 
-Let's compute the $t_{\mathrm{delay}}$ in Gigayears as an extra binary history column `tdelay(Gyr)` in `run_binary_extras.f90`, and print its value on the `pgstar` window, in the Text Summary part.
+Let's compute the $t_{\mathrm{delay}}$ in Gigayears (<a href="#eq-tdelay">Eq. (1)</a>) as an extra binary history column `tdelay(Gyr)` in `run_binary_extras.f90`, and print its value on the `pgstar` window, in the Text Summary part.
 </div>
 
 <details>
@@ -688,7 +692,7 @@ end function how_many_extra_binary_history_columns
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-  Search for the string "`TDELAY`" 😏
+  Search for the string "`TDELAY`" in `inlist1` 😏
 
 
   </div>
@@ -737,7 +741,7 @@ Text_Summary1_name(8,4) = 'tdelay(Gyr)'
     <p style="margin: 0;">
       Run your star + BH model with <code>./rn | tee output.txt</code>.<br>
       In case you need them, here are the complete inlists for this run:
-      <a href="../lab3/stable_MT_SOL.zip" download>
+      <a href="/thursday/lab3/stable_MT_SOL.zip" download>
         <code>stable_MT_SOL.zip</code>
       </a>
     </p>
@@ -750,33 +754,48 @@ Your `pgstar` window should look like something like this (this is the very last
 <!-- ![pgstar_stable_caseA_new](/thursday/lab3/pgstar_stable_caseA_new.png) -->
 <a id="fig-caseA"></a>
 
-<a href="../lab3/pgstar_stable_caseA_new.png" target="_blank">
-  <img src="../lab3/pgstar_stable_caseA_new.png" alt="Case A figure">
-</a>
+<!-- <a href="/thursday/lab3/pgstar_stable_caseA_new.png" target="_blank">
+  <img src="/thursday/lab3/pgstar_stable_caseA_new.png" alt="Case A figure">
+</a> -->
+[![Case A figure](/thursday/lab3/pgstar_stable_caseA_new.png)](/thursday/lab3/pgstar_stable_caseA_new.png)
 
 **Figure 1.** Stable mass transfer, Case A evolution for a star + BH binary (click to zoom in!).
 
-- Make sure that the **Kippenhahn diagram** shows nice convective zones (filled in light blue) and the Helium core (the solid green line). If it is the case, you did well in putting `mixing_regions 10` in `history_columns.list` (as indicated in this [section](#modify-history_columnslist)) ☺️ Otherwise, no problem. Do it now, as we will look into the Kippenhahn diagram for a later run. You can also download the correct file <a href="../lab3/history_columns.list" download> <code>here</code></a>.
+- Make sure that the **Kippenhahn diagram** shows nice convective zones (filled in light blue) and the Helium core (the solid green line). If it is the case, you did well in putting `mixing_regions 10` in `history_columns.list` (as indicated in this [section](#modify-history_columnslist)) ☺️ Otherwise, no problem. Do it now, as we will look into the Kippenhahn diagram for a later run. You can also download the correct file <a href="/thursday/lab3/history_columns.list" download> <code>here</code></a>.
 - Check that the **info about the `tdelay(Gyr)`** column is appearing in the Text Summary, as you can see in here. If not, you may have done something wrong with the implementation... You can try again, but if you're short on time, just look at the [Figure 1](#fig-caseA) (click to zoom in!) to answer to the Analysis of the run questions here below.
 
 ### Analysis of the run: Case A mass transfer!
 Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at [Figure 1](#fig-caseA) (click to zoom in!). Try to think about it and answer together with your table.
 
-1. How much mass did the donor star lose?
+1. Which type of mass transfer do you observe in this star + BH run?  
    {{< details title="Solution" closed="true" >}}
-
+  The mass transfer starts during the Main Sequence → Case A!
+  You can see it from the shape of the Hertzsprung-Russel diagram (ask your TA if you don't know!).
 {{< /details >}}
-1. How much mass did the BH accrete?
-      {{< details title="Solution" closed="true" >}}
 
+2. How much mass did the donor star lose?
+   {{< details title="Solution" closed="true" >}}
+The donor star started from a mass of $39.8\:M_{\odot}$ (see [Table 1](#table-caseA)), and is now $23.95\:M_{\odot}$. You can read this value in the Text Summary (`star_mass`), or look at the Kippenhahn diagram. So it lost $15.85\:M_{\odot}$, which corresponds to 40% of its initial mass!
 {{< /details >}}
-2. How much did the orbit shrink?
+3. Is the donor star stripped to its core?
       {{< details title="Solution" closed="true" >}}
-
+Almost! Look at the Text Summary (`he_core_mass`) and / or the Kippenhahn diagram. The Helium core is $22.50\:M_{\odot}$, and the donor is stripped to a total mass of $23.95\:M_{\odot}$. The Helium core amounts to 93.9% of the star, while the Hydrogen-rich envelope amounts to $23.95−22.50=1.45\:M_{\odot}$, only 6.1%.
 {{< /details >}}
-3. Assume that the donor star will collapse into a BH of mass equal to its mass at Helium depletion (end of the run). Will the system merge within the age of the Universe?
+4. How much mass did the BH accrete? Do you understand why?
       {{< details title="Solution" closed="true" >}}
-
+The BH accretor started from a mass of $16.8\:M_{\odot}$ (see [Table 1](#table-caseA)), and is now $16.98\:M_{\odot}$ (see `star_2_mass` value). Therefore it only accreted $0.18\:M_{\odot}$, so it increased its mass by only 1.1%. The Eddington-limited accretion made such that the mass transfer becomes almost completely non-conservative (i.e., all the material is expelled from the binary).
+{{< /details >}}
+5. How did the orbit evolve during mass transfer? And what is the final period?
+  {{< details title="Solution" closed="true" >}}
+The system started with a period of $4.5$ days, and has followed a sort of parabola-shaped path (see the `log_period_days` plot) that has led to shrinkage. At the end of the mass transfer episode, the orbit is $2.4$ days wide. This amounts to almost 50% overall shrinkage!
+{{< /details >}}
+6. Assume that the donor star will collapse into a BH of mass equal to its mass at Helium depletion (end of the run). Will the system merge within the age of the Universe?
+      {{< details title="Solution" closed="true" >}}
+You have calculated the `tdelay(Gyr)` yourself 🌝 You see it is equal to 4.28 Gyr, less than the age of the Universe ($\sim 13.8\:\mathrm{Gyr}$). Yes, we have chirping binary black holes!
+{{< /details >}}
+7. How is the final mass ratio of your BH + BH binary?
+      {{< details title="Solution" closed="true" >}}
+The donor will collapse into a BH of mass $23.95\:M_{\odot}$, and the companion BH has a mass of $16.98\:M_{\odot}$. The mass ratio is then $\sim 0.7$! This number is right about what more detailed population synthesis studies expect for stable mass transfer to produce 😌 
 {{< /details >}}
 
 
@@ -788,22 +807,23 @@ However, this is not the only possible way for matter to leave the binary. 3D hy
 Because the $L_2$ point is located farther away from the center of mass than the accretor itself, material escaping through $L_2$ carries away **much more angular momentum** than in the isotropic re-emission case.
 
 <a id="fig-L2"></a>
-<a href="../lab3/L2_outflow.jpeg" target="_blank">
-  <img src="../lab3/L2_outflow.jpeg" alt="L2 outflow" style="max-width:700px; width:100%;">
+<a href="/thursday/lab3/L2_outflow.jpeg" target="_blank">
+  <img src="/thursday/lab3/L2_outflow.jpeg" alt="L2 outflow" style="max-width:700px; width:100%;">
 </a>
 **Figure 2.** Schematics[^lu2022] of $L_2$ outflow in a binary, where the $\Phi$s indicate different levels of gravitational equipotential; $L_1$ is the first Lagrangian point (through which material can flow). 
 
+<a id="eq-Jdot_iso"></a>
 In practice, this introduces an additional contribution to the orbital angular momentum evolution of the binary system, which for simplicity we will write as
 
 $$\dot{J}_{\mathrm{ml}}=\dot{J}_{\mathrm{isotropic}}+\dot{J}_{\mathrm{L2}},$$
 
 where these $\dot{J}$ is the time derivative of the angular momentum component $J$ (and "ml" = mass loss). The angular momentum loss associated with matter expelled through the $L_2$ point can be written as
 
-$$\dot{J}_{\mathrm{L2}}=\upsilon\times\dot{M}_{\mathrm{MT}}\left[\left(\frac{m_{\mathrm{accretor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,$$
+$$\dot{J}_{\mathrm{L2}}=\upsilon\times\dot{M}_{\mathrm{MT}}\left[\left(\frac{m_{\mathrm{accretor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}-x_{\mathrm{L2}}\right)a\right]^2\frac{2\pi}{P} ,\,\tag{2}$$
 
 while the standard isotropic re-emission contribution is
 
-$$\dot{J}_{\mathrm{isotropic}}=\beta\times\dot{M}_{\mathrm{MT}}\left(\frac{m_{\mathrm{donor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}a\right)^2\frac{2\pi}{P} .$$
+$$\dot{J}_{\mathrm{isotropic}}=\beta\times\dot{M}_{\mathrm{MT}}\left(\frac{m_{\mathrm{donor}}}     {m_{\mathrm{accretor}} + m_{\mathrm{donor}}}a\right)^2\frac{2\pi}{P} .\,\tag{3}$$
 
 Here:
 
@@ -825,7 +845,7 @@ $L_2$ mass outflow has been associated observationally with **circumbinary outfl
 > [!IMPORTANT]
 >In the context of gravitational wave sources, $L_2$ mass outflow is expected to efficiently tighten star + BH binaries that are residing in quite wide orbits, so that after the detachment, the binary will be already close enough to start chirping at the formation of the second BH! **In this part of the minilab3, we will demonstrate that, in presence of $L_2$ mass outflow, a wide binary, like the Case B system you produced in minilab1, can form a gravitational wave source after stable mass transfer.**
 >
-> You can start from the same setup as you developed so far (also downloadable <a href="../lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
+> You can start from the same setup as you developed so far (also downloadable <a href="/thursday/lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
 > ```bash
 > cp -r stable_MT stable_MT_L2
 >```
@@ -1332,6 +1352,7 @@ end subroutine my_adjust_mdots
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
+  This is the part in which you will use <a href="#eq-Jdot_iso">Eq. (2)</a> and <a href="#eq-Jdot_iso">Eq. (3)</a>.
   Start by copying this guided skeleton entirely inside your `run_binary_extras.f90`. This is just a commented version of the classic empty routine `null_other_jdot_ml` from `$MESA_DIR/binary/other/mod_other_binary_jdot.f90`! So in the future, you will know where to start. 
 
   {{< details title="Guided skeleton of `my_jdot_ml`" closed="true" >}}
@@ -1519,7 +1540,7 @@ History_Panels1_other_yaxis_name(2) = 'lg_mdot_L2'
     <p style="margin: 0;">
       Run your star + BH model with L2 outflow.<br>
       In case you need them, here are the complete inlists for this run:
-      <a href="../lab3/stable_MT_L2_SOL.zip" download>
+      <a href="/thursday/lab3/stable_MT_L2_SOL.zip" download>
         <code>stable_MT_L2_SOL.zip</code>
       </a>
     </p>
@@ -1532,9 +1553,10 @@ Your `pgstar` window should look like something like this (this is the very last
 <!-- ![pgstar_stable_caseB](/thursday/lab3/pgstar_stable_caseB_new.png) -->
 <a id="fig-caseB"></a>
 
-<a href="../lab3/pgstar_stable_caseB_new.png" target="_blank">
-  <img src="../lab3/pgstar_stable_caseB_new.png" alt="Case B figure">
-</a>
+<!-- <a href="/thursday/lab3/pgstar_stable_caseB_new.png" target="_blank">
+  <img src="/thursday/lab3/pgstar_stable_caseB_new.png" alt="Case B figure">
+</a> -->
+[![Case B figure](/thursday/lab3/pgstar_stable_caseB_new.png)](/thursday/lab3/pgstar_stable_caseB_new.png)
 
 **Figure 3.** Stable mass transfer, Case B evolution for a star + BH binary (click to zoom in!).
 
@@ -1544,21 +1566,30 @@ Your `pgstar` window should look like something like this (this is the very last
 ### Analysis of the run: Case B mass transfer!
 Here are some discussion points for you to understand what happened physically to your star + BH system; you will only need to look at [Figure 3](#fig-caseB) (click to zoom in!). Try to think about it and answer together with your table.
 
-1. How much mass did the donor star lose?
+1. Which type of mass transfer do you observe in this star + BH run?  
    {{< details title="Solution" closed="true" >}}
-
+  The mass transfer starts after the Main Sequence → Case B!
+  You can see it from the shape of the Hertzsprung-Russel diagram (ask your TA if you don't know!).
 {{< /details >}}
-1. How much mass did the BH accrete? Any difference with the previous run that was assuming Eddington-limited accretion?
-      {{< details title="Solution" closed="true" >}}
-
+2. How much mass did the donor star lose? How is it compared to the previous run that was assuming Eddington-limited accretion?
+   {{< details title="Solution" closed="true" >}}
+The donor star started from a mass of $40.8\:M_{\odot}$ (see [Table 1](#table-caseB)), and is now $24.77\:M_{\odot}$. You can read this value in the Text Summary (`star_mass`), or look at the Kippenhahn diagram. So it lost $16.03\:M_{\odot}$, which corresponds to 40% of its initial mass! More or less, like in the Case A system.
 {{< /details >}}
-2. How much did the orbit shrink? Compare with the previous run.
+3. How much mass did the BH accrete? Any difference with the previous run?
       {{< details title="Solution" closed="true" >}}
-
+The BH accretor started from a mass of $17.14\:M_{\odot}$ (see [Table 1](#table-caseB)), and is now... $17.14\:M_{\odot}$ (see `star_2_mass` value)! It accreted absolutely nothing, as we wanted. Our setup is constructed such that $\upsilon+\beta=1$, i.e. 100% of the mass that the donor transfers is expelled from the binary.
 {{< /details >}}
-1. Will the system merge within the age of the Universe?
+4. How much did the orbit shrink? Compare with the previous run.
       {{< details title="Solution" closed="true" >}}
-
+The system started with a period of $32.2$ days. At the end of the mass transfer episode, the orbit is $3.0$ days wide. This amounts to 91% overall shrinkage! Quite wild, and for sure wilder than the Eddington-limited case.
+{{< /details >}}
+5. Will the system merge within the age of the Universe?
+      {{< details title="Solution" closed="true" >}}
+We have in this case a time delay of $7.38$ Gyr. So yes, another chirping binary!
+{{< /details >}}
+6. How is the final mass ratio of your BH + BH binary? Any difference with the previous run?
+      {{< details title="Solution" closed="true" >}}
+The donor will collapse into a BH of mass $24.77\:M_{\odot}$, and the companion BH has a mass of $17.14\:M_{\odot}$. The mass ratio is then $\sim 0.7$! Not much difference with the previous run, and still consistent with population synthesis studies of stable mass transfer 😌 
 {{< /details >}}
 
 <!-- #### ➕ BONUS: CASE B comparison!
@@ -1575,11 +1606,16 @@ $$\dot{M}_{\mathrm{MT}}\gtrsim10 \times \frac{m_{\mathrm{donor}}}{t_{\mathrm{KH}
 
 The final outcome of CE evolution is highly uncertain because the process is intrinsically three-dimensional and hydrodynamical (thus computationally expensive to simulate). In some cases the binary merges completely if the inspiral is too strong; in others, **the envelope is successfully ejected and the binary survives with a much tighter orbit.** In literature, the final orbital separation post-CE, $a_{\mathrm{post-CE}}$, is commonly computed using the *energy formalism*[^ivanova2013]. In this framework, the binding energy of the donor envelope is assumed to be balanced by a fraction of the released orbital energy:
 
+<a id="eq-PpostCE"></a>
 $$E_{\mathrm{bind}}=\alpha_{\mathrm{CE}}\Delta E_{\mathrm{orb}}=\alpha_{\mathrm{CE}}\frac{G}{2}\left(\frac{(m_{\mathrm{donor,i}}-m_{\mathrm{env}})m_{\mathrm{accretor,f}}}{a_{\mathrm{post-CE}}}-\frac{m_{\mathrm{donor,i}}m_{\mathrm{accretor,i}}}{a_{\mathrm{i}}}\right) .$$
 
-Solving for the post-common-envelope separation gives
+Solving for the post-CE separation gives
 
-$$a_{\mathrm{post-CE}}=(m_{\mathrm{donor,i}}-m_{\mathrm{env}})m_{\mathrm{accretor,f}}\left(\frac{2E_{\mathrm{bind}}}{\alpha_{\mathrm{CE}}G}+\frac{m_{\mathrm{donor,i}}m_{\mathrm{accretor,i}}}{a_{\mathrm{i}}}\right)^{-1} .\,\tag{5}$$
+$$a_{\mathrm{post-CE}}=(m_{\mathrm{donor,i}}-m_{\mathrm{env}})m_{\mathrm{accretor,f}}\left(\frac{2E_{\mathrm{bind}}}{\alpha_{\mathrm{CE}}G}+\frac{m_{\mathrm{donor,i}}m_{\mathrm{accretor,i}}}{a_{\mathrm{i}}}\right)^{-1} ,\,\tag{5}$$
+
+which is directly translatable into the post-CE period via the III Kepler's law:
+
+$$P_{\mathrm{post-CE}}=2\pi\sqrt{\frac{a_{\mathrm{post-CE}}^3}{G\left[(m_{\mathrm{donor,i}}-m_{\mathrm{env}})+m_{\mathrm{accretor,f}}\right]}}\, . \tag{6}$$
 
 Here:<a id="eq-ebind"></a>
 
@@ -1593,7 +1629,7 @@ Here:<a id="eq-ebind"></a>
   estimated by integrating the gravitational and internal energy of the envelope layers:
 
   
-  $$E_{\mathrm{bind}}=\int_{m_{\mathrm{He\:core}}}^{m_{\mathrm{donor}}}\left(-\frac{Gm}{r}+u-\epsilon_{\mathrm{diss}}\right)\, dm ,\,\tag{6}$$
+  $$E_{\mathrm{bind}}=\int_{m_{\mathrm{He\:core}}}^{m_{\mathrm{donor}}}\left(-\frac{Gm}{r}+u-\epsilon_{\mathrm{diss}}\right)\, dm ,\,\tag{7}$$
 
   and $m$ is the mass enclosed within a shell, $r$ is the radius of the shell, $u$ is the specific internal energy, $\epsilon_{\mathrm{diss}}$ is the correction due to molecular hydrogen dissociation energy, $dm$ is the mass of the shell.
 
@@ -1601,7 +1637,7 @@ Here:<a id="eq-ebind"></a>
 > [!IMPORTANT]
 > In the context of gravitational wave sources, CE has been classically invoked as a way to form double BHs binaries, due to its efficient tightening of the orbit of star + BH systems prior to the evolution into BH + BH binaries. Pretty much as the stable mass transfer channels that we have seen above 😁 **The aim of this exercise is to explore how CE evolution can form gravitational wave sources and compare its outcome to the stable mass transfer channel**.
 >
-> You can start from the same setup as you developed for the Case A mass transfer (also downloadable <a href="../lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
+> You can start from the same setup as you developed for the Case A mass transfer (also downloadable <a href="/thursday/lab3/stable_MT_SOL.zip" download> <code>here</code></a>):
 > ```bash
 > cp -r stable_MT CE
 >```
@@ -1623,7 +1659,7 @@ Here:<a id="eq-ebind"></a>
 
 > [!NOTE]
 > 1. MESA actually has a suite of routines for modeling the CE stage in 1D in the most physically-motivated possible way (mostly following the formalism from Marchant et al. (2021)[^marchant2021])! We will not make use of these, but if you are curious, you can give a look at [last year's Summer School binary day](https://mesa-leuven.4d-star.org/tutorials/wednesday/lab-3). We will instead **stop our simulation at CE onset, and use the energy formalism to predict the post-CE properties of our binary.**
-> 2. When you want to **pass information between `run_star_extras.f90` and `run_binary_extras.f90`** (for example, if you calculate something in `data_for_extra_history_columns` and you want to use that quantity in `data_for_extra_binary_history_columns`, you can use the `s% xtra` array!)
+> 2. When you want to **pass information between `run_star_extras.f90` and `run_binary_extras.f90`** (for example, if you calculate something in `data_for_extra_history_columns` and you want to use that quantity in `data_for_extra_binary_history_columns`), **you can use the `s% xtra` array!**
 > 3. If you don't know how quantities are called, you can check `$MESA_DIR/star_data/public/star_data_step_work.inc` for the `s%` structure, and `$MESA_DIR/binary/public/binary_data.inc` for the `b%` structure.
 
 <div style="
@@ -1637,7 +1673,7 @@ Here:<a id="eq-ebind"></a>
     🧪 Task: Modify <code>run_star_extras.f90</code>
   </div>
 
-Calculate an extra history column `Ebind(erg)` for the binding energy $E_{\mathrm{bind}}$ of the hydrogen envelope of our star, in $\mathrm{erg}$ (<a href="#eq-ebind">Eq. (6)</a>).
+Calculate an extra history column `Ebind(erg)` for the binding energy $E_{\mathrm{bind}}$ of the hydrogen envelope of our star, in $\mathrm{erg}$ (<a href="#eq-ebind">Eq. (7)</a>). Then save its value into `s% xtra`.
 </div>
 
 
@@ -1657,7 +1693,7 @@ Calculate an extra history column `Ebind(erg)` for the binding energy $E_{\mathr
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-  Your `run_star_extras.f90` looks kinda empty because it is reading running the standard routines in `standard_run_star_extras.inc`. We need to copy those routines in here and modify them. Do you remember where they are? You can always do a 
+  Your `run_star_extras.f90` looks kinda empty because it is running the standard routines in `standard_run_star_extras.inc`. We need to copy those routines in here and modify them. Do you remember where they are? You can always do a 
   
   ```bash
   `grep -nri standard_run_star_extras.inc $MESA_DIR/star`
@@ -1688,7 +1724,7 @@ Copy the entire content of `$MESA_DIR/star/job/standard_run_star_extras.inc` in 
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-  You can loop over the star's shells with a fortran loop from `k=1` (surface) to `k=s% nz` (center). Watch out: in <a href="#eq-ebind">Eq. (6)</a> you have an integral from the (He-rich) core of the star to the surface, so you'll want your loop to go through only hydrogen-rich shells, to compute the `Ebind` of the envelope.
+  You can loop over the star's shells with a fortran loop from `k=1` (surface) to `k=s% nz` (center). Watch out: in <a href="#eq-ebind">Eq. (7)</a> you have an integral from the (He-rich) core of the star to the surface, so you'll want your loop to go through only hydrogen-rich shells, to compute the `Ebind` of the envelope.
 
   You can check whether the shells are hydrogen-rich with something like `s% X(k) > 0.1d0`, where `s% X(k)` is the hydrogen mass fraction at the mass shell `k`.
 
@@ -1730,7 +1766,7 @@ end do
   ```
 
   {{< details title="Curious to understand why?" closed="true" >}}
-The hydrogen dissociation energy contribution enters the integrand of <a href="#eq-ebind">Eq. (6)</a> as
+The hydrogen dissociation energy contribution enters the integrand of <a href="#eq-ebind">Eq. (7)</a> as
 
 $$\epsilon_{\mathrm{diss}}=\frac{N_A \, E_{\mathrm{H_2}}}{2}\, X ,$$
 
@@ -1759,7 +1795,7 @@ Here $E_{\mathrm{H_2}} = 4.52\,\mathrm{eV}$ is the dissociation energy of molecu
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-  You want <a href="#eq-ebind">Eq. (6)</a> to give you a quantity in $\mathrm{erg}$, the cgs unit for energy. So be sure to check all the units in `$MESA_DIR/star_data/public/star_data_step_work.inc`.
+  You want <a href="#eq-ebind">Eq. (7)</a> to give you a quantity in $\mathrm{erg}$, the cgs unit for energy. So be sure to check all the units in `$MESA_DIR/star_data/public/star_data_step_work.inc`.
 
   </div>
 </details>
@@ -1792,9 +1828,23 @@ subroutine data_for_extra_history_columns(id, n, names, vals, ierr)
     end if
   end do
   vals(1) = Ebind
+  s% xtra(1) = Ebind
 
 end subroutine data_for_extra_history_columns
 ```
+
+```fortran
+integer function how_many_extra_history_columns(id)
+    integer, intent(in) :: id
+    integer :: ierr
+    type (star_info), pointer :: s
+    ierr = 0
+    call star_ptr(id, s, ierr)
+    if (ierr /= 0) return
+    how_many_extra_history_columns = 1
+end function how_many_extra_history_columns
+```
+
 {{< /details >}}
 
 <div style="
@@ -1808,7 +1858,7 @@ end subroutine data_for_extra_history_columns
     🧪 Task: Modify <code>run_binary_extras.f90</code>
   </div>
 
-Let's implement a stopping condition at the onset of the common envelope episode, i.e. when the mass transfer rate exceeds $10\times\dot{M}_{\mathrm{KH}}$ (<a href="#eq-MKH">Eq. (4)</a>), and let's show this mass transfer threshold on the `pgstar` window.
+Let's implement a stopping condition at the onset of the common envelope episode, i.e. when the mass transfer rate exceeds $10\times\dot{M}_{\mathrm{KH}}$ (<a href="#eq-MKH">Eq. (4)</a>), and let's show the Kelvin-Helmholtz mass loss rate on the `pgstar` window together with `lg_mtransfer_rate`.
 </div>
 
 <details>
@@ -1827,20 +1877,118 @@ Let's implement a stopping condition at the onset of the common envelope episode
     border-left:4px solid rgba(246, 171, 59, 0.22);
   ">
 
-   <a href="#eq-MKH">Eq. (4)</a> 
+   Surprise, you don't need to compute $t_{\mathrm{KH}}$ for <a href="#eq-MKH">Eq. (4)</a>, because there is an associated quantity to be found in `$MESA_DIR/star_data/public/star_data_step_work.inc`.  
 
   </div>
 </details>
 
 {{< details title="Solution" closed="true" >}}
+It's called `s% kh_timescale`, and it's in years.
+{{< /details >}}
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>Where do I put the stopping condition?</strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+   For a single star simulation, you would put it into the `extras_finish_step` routine... For a binary, it is very similar 🧠
+
+  </div>
+</details>
+
+{{< details title="Full stopping condition" closed="true" >}}
 ```fortran
-do k=1, s% nz
-  if (s% X(k) > 0.1d0) then
-      Ebind = ...
-  else
-      exit
+integer function extras_binary_finish_step(binary_id)
+  type(binary_info), pointer :: b
+  type (star_info), pointer :: s
+  integer, intent(in) :: binary_id
+  integer :: ierr
+  call binary_ptr(binary_id, b, ierr)
+  if (ierr /= 0) then  ! failure in  binary_ptr
+      return
   end if
-end do
+  extras_binary_finish_step = keep_going
+
+  if (abs(b% mtransfer_rate)*secyer/Msun > 10d0*b% s_donor% m(1) /Msun / b% s_donor% kh_timescale) then
+      extras_binary_finish_step = terminate
+      write(*,*) "Terminate due to mdot>10*M_kh: CE onset!"
+  end if
+
+  end function extras_binary_finish_step
+```
+{{< /details >}}
+
+<details>
+  <summary style="
+    cursor:pointer;
+    padding:0.5rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+    💡 <strong>Visualizing on <code>pgstar</code></strong>
+  </summary>
+
+  <div style="
+    padding:0.75rem;
+    background:rgba(246, 171, 59, 0.22);
+    border-left:4px solid rgba(246, 171, 59, 0.22);
+  ">
+
+  We want to visualize the Kelvin-Helmholtz mass loss rate together with `lg_mtransfer_rate`, therefore we need to save the logarithm of $\dot{M}_{\mathrm{KH}}$ as an extra history column, called something like `log10(Mdot_KH)`.
+
+  Additionally, we want to modify the `pgstar` namelist in `inlist1` in a clever spot. I would put it where you put the $L_2$ rate early on: search for the string "L2"
+
+  </div>
+</details>
+
+{{< details title="Solution for `data_for_extra_binary_history_columns`" closed="true" >}}
+Notice that we had already the calculation of `tdelay(Gyr)` from the first run. So you will have to also increase by 1 the count of `how_many_extra_binary_history_columns`.
+
+```fortran
+subroutine data_for_extra_binary_history_columns(binary_id, n, names, vals, ierr)
+  type(binary_info), pointer :: b
+  integer, intent(in) :: binary_id
+  integer, intent(in) :: n
+  character(len=maxlen_binary_history_column_name) :: names(n)
+  real(dp) :: vals(n)
+  real(dp) :: a_postCE, P_postCE
+  integer, intent(out) :: ierr
+  ierr = 0
+  call binary_ptr(binary_id, b, ierr)
+  if (ierr /= 0) then
+      write (*, *) 'failed in binary_ptr'
+      return
+  end if
+
+  names(1) = 'tdelay(Gyr)'
+  vals(1) = (5d0/256d0) * (clight**5 * b%separation**4) / &
+  (standard_cgrav**3 * b%m(1) * b%m(2) * (b%m(1) + b%m(2)))
+
+  ! convert from seconds -> years -> Gyr
+  vals(1) = vals(1) / secyer / 1d9
+
+  ! KH rate threshold for CE onset
+  names(2) = 'log10(Mdot_KH)'
+  vals(2) = log10(b% s_donor% m(1) / Msun / b% s_donor% kh_timescale)
+
+end subroutine data_for_extra_binary_history_columns
+```
+{{< /details >}}
+
+{{< details title="Solution for `pgstar` in `inlist1`" closed="true" >}}
+```fortran
+History_Panels1_other_yaxis_name(2) = 'log10(Mdot_KH)'
 ```
 {{< /details >}}
 
@@ -1856,26 +2004,81 @@ end do
   </div>
 
 If you have time, try to implement:
-1. ⭐️**BONUS**⭐️ $P_{\mathrm{post-CE}}$ in days as an extra history column `P_postCE(days)`, and show its value in the Text Summary window of `pgstar` -> this task will teach you how to transport information from `run_star_extras.f90` to `run_binary_extras.f90` with `s% xtra`!
-2. ⭐️**BONUS**⭐️ $t_{\mathrm{delay,\:post-CE}}$ in Gyrs as an extra history column `tdelay_postCE(Gyr)`, and show its value in the Text Summary window of `pgstar`-> there's nothing difficult in this task, it is basically the same calculation as you did in [here](#computing-the-time-delay) for <a href="#eq-tdelay">Eq. (1)</a>
+1. ⭐️**BONUS**⭐️ $P_{\mathrm{post-CE}}$ in days (<a href="#eq-PpostCE">Eq. (6)</a>) as an extra history column `P_postCE(days)`, and show its value in the Text Summary window of `pgstar` → you will have to transport the `Ebind` information from `run_star_extras.f90` to `run_binary_extras.f90` with `s% xtra`!
+2. ⭐️**BONUS**⭐️ $t_{\mathrm{delay,\:post-CE}}$ in Gyrs as an extra history column `tdelay_postCE(Gyr)`, and show its value in the Text Summary window of `pgstar`→ there's nothing difficult in this task, it is basically the same calculation as you did in [here](#computing-the-time-delay) for <a href="#eq-tdelay">Eq. (1)</a>. But this time, we want to use the masses and separation post-CE!
    
 >[!CAUTION]
 >🚨🚨 No problem if you don't have time to try, but still copy the full solution from here into your `run_binary_extras.f90`:
 >{{< details title="Fully solved `data_for_extra_binary_history_columns`" closed="true" >}}
 >```fortran
->do k=1, s% nz
->  if (s% X(k) > 0.1d0) then
->      Ebind = ...
->  else
->      exit
+>subroutine data_for_extra_binary_history_columns(binary_id, n, names, vals, ierr)
+>  type(binary_info), pointer :: b
+>  integer, intent(in) :: binary_id
+>  integer, intent(in) :: n
+>  character(len=maxlen_binary_history_column_name) :: names(n)
+>  real(dp) :: vals(n)
+>  real(dp) :: a_postCE, P_postCE
+>  integer, intent(out) :: ierr
+>  ierr = 0
+>  call binary_ptr(binary_id, b, ierr)
+>  if (ierr /= 0) then
+>      write (*, *) 'failed in binary_ptr'
+>      return
 >  end if
->end do
+>
+>  names(1) = 'tdelay(Gyr)'
+>  vals(1) = (5d0/256d0) * (clight**5 * b%separation**4) / &
+>  (standard_cgrav**3 * b%m(1) * b%m(2) * (b%m(1) + b%m(2)))
+>
+>  ! convert from seconds -> years -> Gyr
+>  vals(1) = vals(1) / secyer / 1d9
+>
+>  ! KH rate threshold for CE onset
+>  names(2) = 'log10(Mdot_KH)'
+>  vals(2) = log10(b% s_donor% m(1) / Msun / b% s_donor% kh_timescale)
+>
+>  ! POST-COMMON ENVELOPE period
+>  ! We will use the energy formalism to compute the post-CE separation a_postCE (in centimeters, for convenience!), and then convert it into the post-CE period P_postCE, in days.
+>  names(3) = 'P_postCE(days)'
+>  ! Post-CE orbital separation in cm
+>  a_postCE = (b% s_donor% he_core_mass * Msun) * b% m(2) / &
+>      ( (2d0 * abs(b% s_donor% xtra(1))) / standard_cgrav + &
+>      (b% m(1) * b% m(2)) / b% separation )
+>
+>  ! Post-CE orbital period in days
+>  P_postCE = 2d0*pi * sqrt( a_postCE**3 / &
+>      ( standard_cgrav * (b% s_donor% he_core_mass * Msun + b% m(2)) ) ) / secday
+>  vals(3) = P_postCE
+>
+>  ! POST-COMMON ENVELOPE TIME DELAY
+>  ! The formula is the same that you implemented already before, but this time we will use the post-CE separation (just computed above), the mass of the BH which stays the same, and the mass of the stripped star which is now the core mass.
+>  names(4) = 'tdelay_postCE(Gyr)'
+>  vals(4) = (5d0/256d0) * (clight**5 * a_postCE**4) / &
+>    (standard_cgrav**3 * b% s_donor% he_core_mass * Msun * b%m(2) * (b% s_donor% he_core_mass * Msun + b%m(2)))
+>  ! convert from seconds -> years -> Gyr
+>  vals(4) = vals(4) / secyer / 1d9
+>
+>end subroutine data_for_extra_binary_history_columns
 >```
 >{{< /details >}}
+> and include the relevant columns in your `pgstar` inlist in `inlist1`:
+> {{< details title="Add `tdelay_postCE(Gyr)` and `P_postCE(days)`" closed="true" >}}
+>```fortran
+> Text_Summary1_name(7,4) = 'P_postCE(days)'
+>
+> ! ADD THE TDELAY TO THE TEXT SUMMARY
+> Text_Summary1_name(8,4) = 'tdelay_postCE(Gyr)'
+>```
+>{{< /details >}}
+> and bring up this count: `how_many_extra_binary_history_columns = 4`.
+
 </div>
+
 
 > [!WARNING]
 > Never forget to do `./clean` and `./mk` after modifying the `run_binary_extras.f90` file.
+
+Well done, we're at our third and last run of the day!
 
 <div style="
   max-width: 600px;
@@ -1896,7 +2099,7 @@ If you have time, try to implement:
     text-align: center;
     padding: 8px;
   ">
-    RUN 3 (x minutes on 4 cores)
+    RUN 3 (2 minutes on 4 cores, 560 models)
   </div>
 
   <!-- Body -->
@@ -1907,57 +2110,79 @@ If you have time, try to implement:
     <p style="margin: 0;">
       Run your common envelope model with <code>./rn | tee output.txt</code>.<br>
       In case you need them, here are the complete inlists for this run:
-      <a href="../lab3/common_envelope_SOL.zip" download>
-        <code>common_envelope_SOL.zip</code>
+      <a href="/thursday/lab3/CE_SOL.zip" download>
+        <code>CE_SOL.zip</code>
       </a>
     </p>
   </div>
 
 </div>
 
-Your `pgstar` window should look like something like this (this is NOT the very last model, but the model at which CE starts, number 487):
+Your `pgstar` window should look like something like this (this is the very last model, right when CE starts according to our implemented criterion of <a href="#eq-MKH">Eq. (4)</a>, model number 560):
 
 <!-- ![pgstar_CE_caseA](/thursday/lab3/pgstar_CE_caseA.png) -->
 <a id="fig-CEcaseA"></a>
 
-<a href="../lab3/pgstar_CE_caseA.png" target="_blank">
-  <img src="../lab3/pgstar_CE_caseA.png" alt="CE case A figure">
+<a href="/thursday/lab3/pgstar_CE_caseA_new.png" target="_blank">
+  <img src="/thursday/lab3/pgstar_CE_caseA_new.png" alt="CE case A figure">
 </a>
 
 **Figure 4.** Common envelope evolution at its onset for a star + BH binary (click to zoom in!).
 
-- Make sure `Ebind(erg)`
-- `mdot_kh` is appearing?
+- Make sure that **the Kelvin-Helmholtz rate `log10(Mdot_KH)`** is appearing in the plot of `lg_mtransfer_rate`. You can see that the threshold stays around $10^{-2}\:M_{\odot}\:\mathrm{yr}^{-1}$, which gets easily surpassed by our mass transfer episode after a few models. 
+- Make sure also the new **Text Summary information on $t_{\mathrm{delay\: post-CE}}$ and $P_{\mathrm{post-CE}}$** from the bonus tasks are appearing: `tdelay_postCE(Gyr)` and `P_postCE(days)`. If you don't see them, you must have missed something, but no worries. It was a long implementation! You can try to fix it, or just go to the "Analysis of the run" section and simply look at [Figure 4](#fig-CEcaseA) (click to zoom in!) to answer to the conceptual questions.
 
 ### Analysis of the run: runaway mass transfer!
 Here are some discussion points; you will only need to look at [Figure 4](#fig-CEcaseA) (click to zoom in!). Try to think about it and answer together with your table.
 
 1. How is the mass transfer rate evolving, and how can you see that you are at CE onset?
    {{< details title="Solution" closed="true" >}}
+The mass transfer rate is on a steep journey of ever-growing disaster 😨 You can see it from the `lg_mtransfer_rate` plot, where also we have highlighted the `log10(Mdot_KH)` to show an indication of the timescale over which the star as whole would be able to relax thermally. 
 
+You can also see it from the `rl_relative_overflow` plot, in which you see a plateaux at a value above 1 (i.e. the radius of the star keeps being bigger than its Roche Lobe).
 {{< /details >}}
 
-2. Did you produce a gravitational wave source?
+Assume now that, after CE, your system survives as a binary, and the envelope of the stripped star is fully lifted out of the system. Further, the star will quickly evolve into a BH with mass equal to its own Helium core mass. According to the energy formalism that we used to compute the post-CE properties,
+
+2. Does this star + BH system produce a gravitational wave source?
       {{< details title="Solution" closed="true" >}}
-
+Indeed, since the `tdelay_postCE` amounts to only 30 000 years. This will merge fast 😵‍💫
       {{< /details >}}
 
-3. Is the final orbital separation tighter in this case, with respect to the case of stable mass transfer?
+3. Is the post-CE orbital period tighter in this case, with respect to the case of stable mass transfer?
    {{< details title="Solution" closed="true" >}}
-
+Definitely tighter. In here we have something like $\sim 0.02\:\mathrm{days}=30\:\mathrm{minutes}$! As compared to the stable mass transfer cases, we have 2 order of magnitudes difference. 
       {{< /details >}}
 
-4. Is the final mass ratio of your BH + BH binary different with respect to the stable mass transfer case?
-   {{< details title="Solution" closed="true" >}}
+4. Does this post-CE orbit make sense, i.e. could our two BHs actually fit in it?
+      {{< details title="Solution" closed="true" >}}
+Yes! A binary composed of black holes with masses  $21.94\,M_\odot$ and $M_2 = 5\,M_\odot$ can physically exist with an orbital period of $P = 0.02$ days. Using Kepler’s third law,
 
+$$
+a^3 = \frac{G(M_1+M_2)P^2}{4\pi^2} \approx 0.93\,R_\odot.
+$$
+
+This means the two black holes orbit at a separation comparable to the radius of the Sun 🌞 For comparison, the Schwarzschild radii (a sort of indication of the BHs' size, $\propto \frac{2GM}{c^2}$) are much smaller:
+
+- $\sim 65$ km for the $21.94\,M_\odot$ BH  
+- $\sim 15$ km for the $5\,M_\odot$ BH 
+      {{< /details >}}
+
+1. Is the final mass ratio of your BH + BH binary different with respect to the stable mass transfer case?
+   {{< details title="Solution" closed="true" >}}
+The answer is yes again: the mass ratio in this case would be $\sim 0.23$, much more extreme than in the stable mass transfer case.
       {{< /details >}}
 
 
 
 ## 3. Conclusions
+Congratulations for making it till here! 🥳🥳 In this last lab we have completed our overview of binary evolution from Zero Age Main Sequence stars to binary black holes. We have learned three possible ways to form gravitational wave sources from the star + BH configuration: Case A stable mass transfer, Case B stable mass transfer, and common envelope evolution, and all three possibilites have been shown to contribute to the observed sample of gravitational waves detected by LIGO, Virgo and KAGRA interferometers[^GWTC4]. 
+
+>[!IMPORTANT]
+>Whether or not the relationship between star + BH remains stable determines different properties in the BH + BH resulting binary, and singling out the fingerprint of the different channels is still a hot topic: this is how the gravitational wave sources that we see today can teach us something about the (love and hate!) history of their parent stellar progenitors ♥️
 
 ## References
-[^peters1964]: [Peters (1964), Gravitational Radiation and the Motion of Two Point Masses](https://ui.adsabs.harvard.edu/abs/1964PhRv..136.1224P?utm_source=chatgpt.com)
+[^peters1964]: [Peters (1964), Gravitational Radiation and the Motion of Two Point Masses](https://ui.adsabs.harvard.edu/abs/1964PhRv..136.1224P)
 [^SS433]: [Wikipedia — SS433](https://en.wikipedia.org/wiki/SS_433)
 [^GWTC4]: [The LIGO Scientific Collaboration, the Virgo Collaboration, the KAGRA Collaboration, et al. (2025a), GWTC-4.0: Updating the Gravitational-Wave Transient Catalog with Observations from the First Part of the Fourth LIGO-Virgo-KAGRA Observing Run](https://arxiv.org/abs/2508.18082)
 [^lu2022]: [Lu et al. (2022), Stable mass transfer via L2 outflows in massive binaries](https://ui.adsabs.harvard.edu/abs/2023MNRAS.519.1409L)
